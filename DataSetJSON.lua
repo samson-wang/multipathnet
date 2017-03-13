@@ -231,7 +231,9 @@ function DataSetCOCO:loadROIDB(best_number)
          boxes, scores = filterArea(boxes, scores, self.min_proposal_area)
          boxes, scores = filterScore(boxes, scores, best_number)
 
-         boxes = boxes:size(2) ~= 4 and torch.FloatTensor(0,4) or boxes:index(2,permute_tensor)
+--         boxes = boxes:size(2) ~= 4 and torch.FloatTensor(0,4) or boxes:index(2,permute_tensor)
+         -- The coordinate should be (x0, y0, x1, y1) and no reorder
+         boxes:narrow(2,3,2):add(boxes:narrow(2,1,2)):add(1)
          self.roidb[i] = boxes
          self.scoredb[i] = scores
       end
